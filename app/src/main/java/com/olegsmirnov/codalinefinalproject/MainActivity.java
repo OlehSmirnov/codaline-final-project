@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener(this);
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, mlocListener);
         } catch (SecurityException e) {
             Toast.makeText(getApplicationContext(), "Permissions not granted!", Toast.LENGTH_SHORT).show();
         }
