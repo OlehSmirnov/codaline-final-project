@@ -1,7 +1,11 @@
 package com.olegsmirnov.codalinefinalproject;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class WeatherData {
@@ -12,15 +16,11 @@ class WeatherData {
         return list;
     }
 
-    public void setWeather(List<WeatherList> weather) {
-        this.list = weather;
-    }
-
-    class WeatherList {
+    static class WeatherList implements Parcelable {
 
         private Temperature temp;
 
-        private List<Weather> weather;
+        private ArrayList<Weather> weather;
 
         @SerializedName("dt")
         private long date;
@@ -28,39 +28,55 @@ class WeatherData {
         @SerializedName("speed")
         private double windSpeed;
 
-        public Temperature getTemperature() {
-            return temp;
+        WeatherList(Parcel in) {
+            weather = in.readArrayList(Weather.class.getClassLoader());
+            temp = in.readParcelable(Temperature.class.getClassLoader());
+            date = in.readLong();
+            windSpeed = in.readDouble();
         }
 
-        public void setTemperature(Temperature temperature) {
-            this.temp = temperature;
+        public static final Creator<WeatherList> CREATOR = new Creator<WeatherList>() {
+            @Override
+            public WeatherList createFromParcel(Parcel in) {
+                return new WeatherList(in);
+            }
+
+            @Override
+            public WeatherList[] newArray(int size) {
+                return new WeatherList[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeList(weather);
+            parcel.writeParcelable(temp, 0);
+            parcel.writeLong(date);
+            parcel.writeDouble(windSpeed);
+        }
+
+        public Temperature getTemperature() {
+            return temp;
         }
 
         public List<Weather> getWeather() {
             return weather;
         }
 
-        public void setWeather(List<Weather> weather) {
-            this.weather = weather;
-        }
-
         public long getDate() {
             return date;
-        }
-
-        public void setDate(long date) {
-            this.date = date;
         }
 
         public int getWindSpeed() {
             return (int) windSpeed;
         }
 
-        public void setWindSpeed(double windSpeed) {
-            this.windSpeed = windSpeed;
-        }
-
-        class Temperature {
+        static class Temperature implements Parcelable {
 
             @SerializedName("morn")
             private double tempMorning;
@@ -74,60 +90,98 @@ class WeatherData {
             @SerializedName("night")
             private double tempNight;
 
-            public int getTempMorning() {
-                return (int) tempMorning;
+            protected Temperature(Parcel in) {
+                tempMorning = in.readDouble();
+                tempDay = in.readDouble();
+                tempEven = in.readDouble();
+                tempNight = in.readDouble();
             }
 
-            public void setTempMorning(double tempMorning) {
-                this.tempMorning = tempMorning;
+            public static final Creator<Temperature> CREATOR = new Creator<Temperature>() {
+                @Override
+                public Temperature createFromParcel(Parcel in) {
+                    return new Temperature(in);
+                }
+
+                @Override
+                public Temperature[] newArray(int size) {
+                    return new Temperature[size];
+                }
+            };
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel parcel, int i) {
+                parcel.writeDouble(tempMorning);
+                parcel.writeDouble(tempDay);
+                parcel.writeDouble(tempEven);
+                parcel.writeDouble(tempNight);
+            }
+
+            public int getTempMorning() {
+                return (int) tempMorning;
             }
 
             public int getTempDay() {
                 return (int) tempDay;
             }
 
-            public void setTempDay(double tempDay) {
-                this.tempDay = tempDay;
-            }
-
             public int getTempEven() {
                 return (int) tempEven;
-            }
-
-            public void setTempEven(double tempEven) {
-                this.tempEven = tempEven;
             }
 
             public int getTempNight() {
                 return (int) tempNight;
             }
 
-            public void setTempNight(double tempNight) {
-                this.tempNight = tempNight;
-            }
         }
 
-        class Weather {
+        static class Weather implements Parcelable {
 
             private String description;
 
             private String icon;
 
-            public String getDescription() {
-                return description;
+            protected Weather(Parcel in) {
+                description = in.readString();
+                icon = in.readString();
             }
 
-            public void setDescription(String description) {
-                this.description = description;
+            public static final Creator<Weather> CREATOR = new Creator<Weather>() {
+                @Override
+                public Weather createFromParcel(Parcel in) {
+                    return new Weather(in);
+                }
+
+                @Override
+                public Weather[] newArray(int size) {
+                    return new Weather[size];
+                }
+            };
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel parcel, int i) {
+                parcel.writeString(description);
+                parcel.writeString(icon);
+            }
+
+            public String getDescription() {
+                return description;
             }
 
             public String getIcon() {
                 return icon;
             }
 
-            public void setIcon(String icon) {
-                this.icon = icon;
-            }
         }
     }
 }

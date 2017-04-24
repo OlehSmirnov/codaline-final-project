@@ -3,17 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.olegsmirnov.codalinefinalproject.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:titleTextColor="@color/colorWhite"
         android:elevation="4dp"
         android:background="@color/colorPrimary" />
 
     <TextView
-        android:id="@+id/tvBestTime"
+        android:id="@+id/tv_best_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -22,5 +24,59 @@
         android:fontFamily="casual"
         android:text="Best Time"
         android:textSize="26sp" />
+
+    <Button
+        android:id="@+id/button_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Details"
+        android:textColor="@color/colorWhite"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@color/colorAccent"
+        android:layout_centerVertical="true" />
+
+    <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:borderWidth="0dp"
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="63dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginRight="23dp"
+        android:clickable="true"
+        app:elevation="4dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/add_button" />
+
+    <ImageView
+        android:id="@+id/iv_clouds"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@android:drawable/ic_menu_report_image"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/tv_temp"
+        android:layout_toStartOf="@+id/tv_temp"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp" />
+
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp"
+        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/button_details"
+        android:layout_toStartOf="@+id/button_details"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"/>
 
 </RelativeLayout>
