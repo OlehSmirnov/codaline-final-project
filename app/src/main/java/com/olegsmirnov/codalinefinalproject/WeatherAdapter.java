@@ -13,13 +13,13 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHolder> {
 
     private ArrayList<WeatherData.WeatherList> mList;
 
     private Context context;
 
-    public MyAdapter(ArrayList<WeatherData.WeatherList> mList, Context context) {
+    public WeatherAdapter(ArrayList<WeatherData.WeatherList> mList, Context context) {
         this.mList = new ArrayList<>(mList);
         this.context = context;
     }

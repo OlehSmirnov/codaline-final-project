@@ -8,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-
 public class MainForecastActivity extends AppCompatActivity {
 
     @Override
@@ -21,7 +19,7 @@ public class MainForecastActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
-        RecyclerView.Adapter adapter = new MyAdapter(list, getApplicationContext());
+        RecyclerView.Adapter adapter = new WeatherAdapter(list, getApplicationContext());
         recyclerView.setAdapter(adapter);
     }
 }
