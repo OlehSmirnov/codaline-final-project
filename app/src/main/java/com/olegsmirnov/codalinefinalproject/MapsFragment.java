@@ -23,8 +23,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
-    private MapView mapView;
-    private GoogleMap mGoogleMap;
+    private Marker marker;
+    private LatLng coords;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mapView = (MapView) view.findViewById(R.id.map);
+        MapView mapView = (MapView) view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
@@ -48,18 +48,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
-        mGoogleMap.setMinZoomPreference(8);
-        LatLng coords = new LatLng(MainFragment.getLatitude(), MainFragment.getLongitude());
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        googleMap.setMinZoomPreference(8);
+        coords = new LatLng(MainFragment.getLatitude(), MainFragment.getLongitude());
+        marker = googleMap.addMarker(new MarkerOptions().position(coords));
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                mGoogleMap.clear();
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng));
+                coords = latLng;
+                marker.setPosition(latLng);
                 new FetchWeatherDataFishing(getContext()).execute(latLng);
             }
         });
-        mGoogleMap.addMarker(new MarkerOptions().position(coords).title("You are here"));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(coords));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(coords));
     }
 }

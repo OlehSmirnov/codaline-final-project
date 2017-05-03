@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Date;
 
 import retrofit2.Response;
@@ -20,12 +19,11 @@ public class FetchWeatherDataAuto extends AsyncTask<Void, Void, Void> {
 
     private String imageURL = "http://openweathermap.org/img/w/";
     private String temp = "";
-
     private WeakReference<Activity> weakActivity;
-
     private Date date;
-
+    private String city = "";
     private ProgressDialog progressDialog;
+    private boolean isTimeFounded = false;
 
     public FetchWeatherDataAuto(Activity activity) {
         this.weakActivity = new WeakReference<>(activity);
@@ -45,11 +43,12 @@ public class FetchWeatherDataAuto extends AsyncTask<Void, Void, Void> {
         try {
             Response<WeatherData> response = ApiClient.getInstance().forecast(MainFragment.getLatitude(), MainFragment.getLongitude()).execute();
             if (response.isSuccessful()) {
-                MainFragment.forecastList = new ArrayList<>();
+                city = response.body().getCity().getName();
                 for (WeatherData.WeatherList list : response.body().getWeather()) {
                     MainFragment.forecastList.add(list);
                     if (list.getWindSpeed() < 8 && !list.getWeather().get(0).getDescription().contains("rain")) {
-                        if (date == null) {
+                        if (!isTimeFounded) {
+                            isTimeFounded = true;
                             date = new Date(list.getDate() * 1000);
                             imageURL += list.getWeather().get(0).getIcon();
                             temp = String.valueOf(list.getTemperature().getTempDay()) + "°C";
@@ -75,7 +74,7 @@ public class FetchWeatherDataAuto extends AsyncTask<Void, Void, Void> {
         TextView tvBestTime = (TextView) activity.findViewById(R.id.tv_best_time);
         Glide.with(activity).load(imageURL + ".png").into(ivClouds);
         tvTemp.setText(temp);
-        tvBestTime.setText("Closest good time is\n" + date.toString().substring(0, 10));
+        tvBestTime.setText("Time to wash auto in " + city + " \n " + date.toString().substring(0, 10));
         progressDialog.dismiss();
     }
 }

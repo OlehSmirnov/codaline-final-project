@@ -1,8 +1,8 @@
 package com.olegsmirnov.codalinefinalproject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import retrofit2.Response;
 
-public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, Void> {
+public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, LatLng> {
 
     private ArrayList<WeatherData.WeatherList> forecastList;
 
@@ -23,7 +23,7 @@ public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(LatLng... latLngs) {
+    protected LatLng doInBackground(LatLng... latLngs) {
         try {
             Response<WeatherData> response = ApiClient.getInstance().forecast(latLngs[0].latitude, latLngs[0].longitude).execute();
             if (response.isSuccessful()) {
@@ -37,13 +37,19 @@ public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, Void> {
             e.printStackTrace();
         }
         System.out.println(forecastList.size());
-        return null;
+        return latLngs[0];
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(LatLng aVoid) {
         super.onPostExecute(aVoid);
-        Intent intent = new Intent(context, MainForecastActivity.class);
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            Toast.makeText(context, geocoder.getFromLocation(aVoid.latitude, aVoid.longitude, 1).get(0).getAddressLine(1), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(context, ForecastActivity.class);
         intent.putParcelableArrayListExtra("LIST", forecastList);
         context.startActivity(intent);
     }

@@ -16,6 +16,20 @@ class WeatherData {
         return list;
     }
 
+    private City city;
+
+    public City getCity() {
+        return city;
+    }
+
+    class City {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+    }
+
     static class WeatherList implements Parcelable {
 
         private Temperature temp;
