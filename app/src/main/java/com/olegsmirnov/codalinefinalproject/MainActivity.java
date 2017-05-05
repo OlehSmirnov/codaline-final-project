@@ -1,13 +1,17 @@
 package com.olegsmirnov.codalinefinalproject;
 
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -43,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
+        if (tab.getPosition() == 1) {
+            Snackbar snack = Snackbar.make(findViewById(android.R.id.content), getString(R.string.maps_message), Snackbar.LENGTH_SHORT);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setGravity(Gravity.CENTER_HORIZONTAL);
+            tv.setTextSize(18);
+            snack.show();
+        }
     }
 
     @Override

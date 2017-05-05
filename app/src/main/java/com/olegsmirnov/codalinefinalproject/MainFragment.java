@@ -2,21 +2,27 @@ package com.olegsmirnov.codalinefinalproject;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,19 +55,43 @@ public class MainFragment extends Fragment implements LocationListener {
     @BindView(R.id.button_details)
     Button buttonDetails;
 
-    @BindView(R.id.floatingActionButton)
-    FloatingActionButton fab;
+    @BindView(R.id.floatingActionButtonAdd)
+    FloatingActionButton fabAdd;
 
-    @OnClick(R.id.floatingActionButton)
+    @BindView(R.id.floatingActionButtonCancel)
+    FloatingActionButton fabCancel;
+
+    @OnClick(R.id.floatingActionButtonAdd)
     public void addNotification() {
-        serviceIntent = new Intent(context, MyAlarmService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, serviceIntent, 0);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent service = new Intent(context, MyReceiverService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, service, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 5);
+        calendar.add(Calendar.SECOND, 10);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(context, "Notification added!", Toast.LENGTH_SHORT).show();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.IS_NOTIFICATION_ACTIVE, true);
+        editor.apply();
+        showSnack(getString(R.string.snack_text_add));
+        fabCancel.setVisibility(View.VISIBLE);
+        fabAdd.setVisibility(View.INVISIBLE);
+    }
+
+    @OnClick(R.id.floatingActionButtonCancel)
+    public void cancelNotification() {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent service = new Intent(context, MyReceiverService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, service, 0);
+        pendingIntent.cancel();
+        alarmManager.cancel(pendingIntent);
+        context.stopService(service);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.IS_NOTIFICATION_ACTIVE, false);
+        editor.apply();
+        showSnack(getString(R.string.snack_text_cancel));
+        fabCancel.setVisibility(View.INVISIBLE);
+        fabAdd.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.button_details)
@@ -75,9 +105,10 @@ public class MainFragment extends Fragment implements LocationListener {
 
     private Context context;
 
-    private Intent serviceIntent;
+    private SharedPreferences sharedPreferences;
 
     private LocationManager locationManager;
+
     private Location location;
     private static double latitude;
     private static double longitude;
@@ -91,6 +122,7 @@ public class MainFragment extends Fragment implements LocationListener {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+        sharedPreferences = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setupLocationManager();
     }
 
@@ -111,6 +143,10 @@ public class MainFragment extends Fragment implements LocationListener {
     @Override
     public void onResume() {
         super.onResume();
+        if (sharedPreferences.getBoolean(Constants.IS_NOTIFICATION_ACTIVE, false)) {
+            fabAdd.setVisibility(View.INVISIBLE);
+            fabCancel.setVisibility(View.VISIBLE);
+        }
         if (locationManager != null) {
             try {
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -126,9 +162,8 @@ public class MainFragment extends Fragment implements LocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (serviceIntent != null) {
-            getActivity().stopService(serviceIntent);
-        }
+        Intent service = new Intent(context, MyReceiverService.class);
+        context.stopService(service);
     }
 
     @Override
@@ -140,7 +175,7 @@ public class MainFragment extends Fragment implements LocationListener {
                 setupLocationManager();
             }
             else {
-                Toast.makeText(getContext(), "Application needs your permission to work properly", Toast.LENGTH_SHORT).show();
+                showSnack(getString(R.string.request_user_permission));
             }
         }
     }
@@ -165,6 +200,20 @@ public class MainFragment extends Fragment implements LocationListener {
     public void onProviderDisabled(String provider) {
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                showSnack("Share app with friends (not really)");
+                return true;
+            case R.id.settings:
+                Toast.makeText(context, "Settings Blank", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public static double getLatitude() {
         return latitude;
     }
@@ -179,7 +228,7 @@ public class MainFragment extends Fragment implements LocationListener {
             boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!isGPSEnabled && !isNetworkEnabled) {
-                Toast.makeText(getContext(), "Location is not available, please enable it and try later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.gps_error_message, Toast.LENGTH_SHORT).show();
             }
             else {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -207,7 +256,7 @@ public class MainFragment extends Fragment implements LocationListener {
                     }
                 }
                 if (location == null) {
-                    Toast.makeText(getContext(), "Turn on your GPS and wait few seconds", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.location_error_message, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     new FetchWeatherDataAuto(getActivity()).execute();
@@ -220,19 +269,13 @@ public class MainFragment extends Fragment implements LocationListener {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.notifications:
-                Toast.makeText(context, "Notifications Blank", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.share:
-                Toast.makeText(context, "Share Blank", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.settings:
-                Toast.makeText(context, "Settings Blank", Toast.LENGTH_SHORT).show();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    private void showSnack(String text) {
+        Snackbar snack = Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT);
+        View view = snack.getView();
+        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        tv.setTextSize(18);
+        snack.show();
     }
+
 }

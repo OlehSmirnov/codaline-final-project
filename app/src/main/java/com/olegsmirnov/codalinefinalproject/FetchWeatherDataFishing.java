@@ -36,7 +36,6 @@ public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, LatLng> {
         catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(forecastList.size());
         return latLngs[0];
     }
 

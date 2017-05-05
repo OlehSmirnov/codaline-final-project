@@ -23,7 +23,7 @@ public class ForecastActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forecast);
         ButterKnife.bind(this);
         ArrayList<WeatherData.WeatherList> list = getIntent().getParcelableArrayListExtra("LIST");
-        tvCity.setText("Weather in " + getIntent().getStringExtra("CITY"));
+        tvCity.setText(getIntent().getStringExtra("CITY"));
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
