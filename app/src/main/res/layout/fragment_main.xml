@@ -15,7 +15,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="110dp"
         android:text="Best Time"
-        android:textColor="@color/colorPrimary"
         android:textSize="26sp" />
 
     <Button
@@ -29,7 +28,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="40dp"
         android:layout_marginEnd="40dp"
-        android:background="@color/colorAccent"
         android:layout_centerVertical="true" />
 
     <android.support.design.widget.FloatingActionButton
@@ -47,6 +45,7 @@
         android:clickable="true"
         app:elevation="4dp"
         app:fabSize="normal"
+        android:contentDescription="Add notification"
         app:srcCompat="@drawable/add_button" />
 
     <android.support.design.widget.FloatingActionButton
@@ -65,6 +64,7 @@
         android:clickable="true"
         app:elevation="4dp"
         app:fabSize="normal"
+        android:contentDescription="Cancel notification"
         app:srcCompat="@drawable/delete_button" />
 
     <ImageView
@@ -76,7 +76,8 @@
         android:layout_toLeftOf="@+id/tv_temp"
         android:layout_toStartOf="@+id/tv_temp"
         android:layout_marginRight="20dp"
-        android:layout_marginEnd="20dp" />
+        android:layout_marginEnd="20dp"
+        android:contentDescription="Cloudiness" />
 
     <TextView
         android:id="@+id/tv_temp"
@@ -89,4 +90,5 @@
         android:layout_toStartOf="@+id/button_details"
         android:layout_marginRight="40dp"
         android:layout_marginEnd="40dp"/>
+
 </RelativeLayout>

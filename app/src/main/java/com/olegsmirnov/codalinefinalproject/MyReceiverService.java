@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
@@ -18,6 +20,7 @@ public class MyReceiverService extends Service {
     public void onCreate() {
         super.onCreate();
         Context context = getApplicationContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         Intent myIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
@@ -25,17 +28,18 @@ public class MyReceiverService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Time to wash")
                 .setAutoCancel(true)
-                .setVibrate(new long[]{100, 500})
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentText("You can wash your auto today");
+        if (sharedPreferences.getBoolean(getString(R.string.prefs_vibro_notifications), false)) {
+            builder.setVibrate(new long[]{100, 500});
+        }
+        if (sharedPreferences.getBoolean(getString(R.string.prefs_sound_notifications), false)) {
+            builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        }
         Notification notification = builder.build();
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.IS_NOTIFICATION_ACTIVE, false);
-        editor.apply();
+        Utils.changeSettings(sharedPreferences, getString(R.string.is_notification_alive), false);
         stopService(myIntent);
     }
 

@@ -40,11 +40,11 @@ public class FetchWeatherDataFishing extends AsyncTask<LatLng, Void, LatLng> {
     }
 
     @Override
-    protected void onPostExecute(LatLng aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(LatLng params) {
+        super.onPostExecute(params);
         Geocoder geocoder = new Geocoder(context);
         try {
-            Toast.makeText(context, geocoder.getFromLocation(aVoid.latitude, aVoid.longitude, 1).get(0).getAddressLine(1), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, geocoder.getFromLocation(params.latitude, params.longitude, 1).get(0).getAddressLine(1), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }

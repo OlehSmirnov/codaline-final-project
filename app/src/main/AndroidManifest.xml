@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ForecastActivity" />
-
+        <activity android:name=".SettingsActivity" />
         <service android:name=".MyReceiverService" />
 
         <meta-data

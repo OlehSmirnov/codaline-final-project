@@ -2,31 +2,30 @@ package com.olegsmirnov.codalinefinalproject;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,11 +69,11 @@ public class MainFragment extends Fragment implements LocationListener {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.add(Calendar.SECOND, 10);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.IS_NOTIFICATION_ACTIVE, true);
-        editor.apply();
-        showSnack(getString(R.string.snack_text_add));
+        Utils.changeSettings(sharedPreferences, getString(R.string.is_notification_alive), true);
+        Utils.showSnack(getString(R.string.snack_text_add), getView());
+        fabCancel.startAnimation(AnimationUtils.loadAnimation(context, R.anim.animation_show));
         fabCancel.setVisibility(View.VISIBLE);
+
         fabAdd.setVisibility(View.INVISIBLE);
     }
 
@@ -86,11 +85,10 @@ public class MainFragment extends Fragment implements LocationListener {
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
         context.stopService(service);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.IS_NOTIFICATION_ACTIVE, false);
-        editor.apply();
-        showSnack(getString(R.string.snack_text_cancel));
+        Utils.changeSettings(sharedPreferences, getString(R.string.is_notification_alive), false);
+        Utils.showSnack(getString(R.string.snack_text_cancel), getView());
         fabCancel.setVisibility(View.INVISIBLE);
+        fabAdd.startAnimation(AnimationUtils.loadAnimation(context, R.anim.animation_show));
         fabAdd.setVisibility(View.VISIBLE);
     }
 
@@ -105,9 +103,10 @@ public class MainFragment extends Fragment implements LocationListener {
 
     private Context context;
 
-    private SharedPreferences sharedPreferences;
-
     private LocationManager locationManager;
+
+    private boolean isNotificationAlive;
+    private SharedPreferences sharedPreferences;
 
     private Location location;
     private static double latitude;
@@ -117,12 +116,13 @@ public class MainFragment extends Fragment implements LocationListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getActivity().getApplicationContext();
-        setHasOptionsMenu(true);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
-        sharedPreferences = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        context = getActivity().getApplicationContext();
+        setHasOptionsMenu(true);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        isNotificationAlive = sharedPreferences.getBoolean(getString(R.string.is_notification_alive), true);
         setupLocationManager();
     }
 
@@ -135,6 +135,11 @@ public class MainFragment extends Fragment implements LocationListener {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
@@ -143,18 +148,34 @@ public class MainFragment extends Fragment implements LocationListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (sharedPreferences.getBoolean(Constants.IS_NOTIFICATION_ACTIVE, false)) {
+        if (isNotificationAlive) {
             fabAdd.setVisibility(View.INVISIBLE);
             fabCancel.setVisibility(View.VISIBLE);
         }
+        if (sharedPreferences.getBoolean(getString(R.string.prefs_light_style), true)) {
+            buttonDetails.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            fabCancel.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+            fabAdd.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+            tvBestTime.setTextColor(ContextCompat.getColor(context, R.color.colorLightBlue));
+        }
+        else {
+            buttonDetails.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightBlue));
+            fabCancel.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorLightBlue)));
+            fabAdd.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorLightBlue)));
+            tvBestTime.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        }
         if (locationManager != null) {
-            try {
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                } else {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-                }
-            } catch (SecurityException e) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            }
+            else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            }
+            else if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
             }
         }
     }
@@ -175,7 +196,7 @@ public class MainFragment extends Fragment implements LocationListener {
                 setupLocationManager();
             }
             else {
-                showSnack(getString(R.string.request_user_permission));
+                Utils.showSnack(getString(R.string.request_user_permission), getView());
             }
         }
     }
@@ -198,20 +219,6 @@ public class MainFragment extends Fragment implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.share:
-                showSnack("Share app with friends (not really)");
-                return true;
-            case R.id.settings:
-                Toast.makeText(context, "Settings Blank", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public static double getLatitude() {
@@ -255,10 +262,7 @@ public class MainFragment extends Fragment implements LocationListener {
                         }
                     }
                 }
-                if (location == null) {
-                    Toast.makeText(context, R.string.location_error_message, Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (location != null) {
                     new FetchWeatherDataAuto(getActivity()).execute();
                 }
             }
@@ -267,15 +271,6 @@ public class MainFragment extends Fragment implements LocationListener {
         {
             e.printStackTrace();
         }
-    }
-
-    private void showSnack(String text) {
-        Snackbar snack = Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT);
-        View view = snack.getView();
-        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setTextSize(18);
-        snack.show();
     }
 
 }
