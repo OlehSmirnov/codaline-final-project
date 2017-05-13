@@ -1,4 +1,4 @@
-package com.olegsmirnov.codalinefinalproject;
+package com.olegsmirnov.codalinefinalproject.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,9 +10,12 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+
+import com.olegsmirnov.codalinefinalproject.activities.MainActivity;
+import com.olegsmirnov.codalinefinalproject.R;
+import com.olegsmirnov.codalinefinalproject.utils.Utils;
 
 public class MyReceiverService extends Service {
 

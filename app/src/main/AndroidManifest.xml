@@ -12,7 +12,7 @@
         android:label="Time To Wash"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,14 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ForecastActivity" />
-        <activity android:name=".SettingsActivity" />
-        <service android:name=".MyReceiverService" />
+        <activity android:name=".activities.ForecastActivity" />
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.HelperActivity" />
+
+        <service android:name=".services.MyReceiverService" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".activities.GettingLocationActivity" />
     </application>
 
 </manifest>

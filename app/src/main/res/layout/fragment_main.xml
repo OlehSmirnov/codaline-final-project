@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.olegsmirnov.codalinefinalproject.MainFragment">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_best_time"
@@ -14,7 +11,7 @@
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="110dp"
-        android:text="Best Time"
+        android:text="@string/best_time"
         android:textSize="26sp" />
 
     <Button
@@ -22,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:text="Details"
+        android:text="@string/details"
         android:textColor="@color/colorWhite"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -30,29 +27,23 @@
         android:layout_marginEnd="40dp"
         android:layout_centerVertical="true" />
 
-    <android.support.design.widget.FloatingActionButton
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:borderWidth="0dp"
-        android:id="@+id/floatingActionButtonAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="63dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginRight="23dp"
-        android:clickable="true"
-        app:elevation="4dp"
-        app:fabSize="normal"
-        android:contentDescription="Add notification"
-        app:srcCompat="@drawable/add_button" />
 
     <android.support.design.widget.FloatingActionButton
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:borderWidth="0dp"
+        android:id="@+id/fab_add"
+        android:src="@drawable/add_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="63dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginRight="23dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cancel"
         android:visibility="invisible"
-        android:id="@+id/floatingActionButtonCancel"
+        android:src="@drawable/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -60,30 +51,23 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="63dp"
         android:layout_marginEnd="23dp"
-        android:layout_marginRight="23dp"
-        android:clickable="true"
-        app:elevation="4dp"
-        app:fabSize="normal"
-        android:contentDescription="Cancel notification"
-        app:srcCompat="@drawable/delete_button" />
+        android:layout_marginRight="23dp" />
 
     <ImageView
         android:id="@+id/iv_clouds"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:srcCompat="@android:drawable/ic_menu_report_image"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/tv_temp"
         android:layout_toStartOf="@+id/tv_temp"
         android:layout_marginRight="20dp"
         android:layout_marginEnd="20dp"
-        android:contentDescription="Cloudiness" />
+        android:contentDescription="@string/cloudiness" />
 
     <TextView
         android:id="@+id/tv_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temp"
         android:textSize="20sp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/button_details"

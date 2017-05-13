@@ -1,8 +1,11 @@
-package com.olegsmirnov.codalinefinalproject;
+package com.olegsmirnov.codalinefinalproject.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.olegsmirnov.codalinefinalproject.fragments.MainFragment;
+import com.olegsmirnov.codalinefinalproject.fragments.MapsFragment;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
 

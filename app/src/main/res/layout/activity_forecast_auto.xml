@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        app:theme="@style/toolbar_theme"
+        android:id="@+id/toolbar_recycler_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"/>
+    
+    <ImageView
+        android:id="@+id/forecast_auto_date"
+        android:layout_below="@id/toolbar_recycler_auto"
+        android:src="@drawable/calendar"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <ImageView
+        android:id="@+id/forecast_auto_wind"
+        android:layout_below="@id/toolbar_recycler_auto"
+        android:src="@drawable/wind"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="165dp"
+        android:layout_marginEnd="165dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="m/s"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_recycler_auto"
+        android:layout_alignLeft="@+id/forecast_auto_wind"
+        android:layout_alignStart="@+id/forecast_auto_wind"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginStart="35dp" />
+
+    <ImageView
+        android:id="@+id/forecast_auto_temperature"
+        android:layout_below="@id/toolbar_recycler_auto"
+        android:src="@drawable/temperature"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginEnd="70dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/forecast_auto_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_recycler_auto"
+        android:layout_alignLeft="@+id/forecast_auto_temperature"
+        android:layout_alignStart="@+id/forecast_auto_temperature"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_auto"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

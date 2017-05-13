@@ -1,4 +1,4 @@
-package com.olegsmirnov.codalinefinalproject;
+package com.olegsmirnov.codalinefinalproject.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-class WeatherData {
+public class WeatherData {
 
     private List<WeatherList> list;
 
@@ -22,15 +22,19 @@ class WeatherData {
         return city;
     }
 
-    class City {
+    public static class City {
         private String name;
 
         public String getName() {
             return name;
         }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    static class WeatherList implements Parcelable {
+    public static class WeatherList implements Parcelable {
 
         private Temperature temp;
 
@@ -42,11 +46,18 @@ class WeatherData {
         @SerializedName("speed")
         private double windSpeed;
 
+        @SerializedName("deg")
+        private double windDegree;
+
+        private double pressure;
+
         WeatherList(Parcel in) {
             weather = in.readArrayList(Weather.class.getClassLoader());
             temp = in.readParcelable(Temperature.class.getClassLoader());
             date = in.readLong();
             windSpeed = in.readDouble();
+            pressure = in.readDouble();
+            windDegree = in.readDouble();
         }
 
         public static final Creator<WeatherList> CREATOR = new Creator<WeatherList>() {
@@ -72,6 +83,8 @@ class WeatherData {
             parcel.writeParcelable(temp, 0);
             parcel.writeLong(date);
             parcel.writeDouble(windSpeed);
+            parcel.writeDouble(pressure);
+            parcel.writeDouble(windDegree);
         }
 
         public Temperature getTemperature() {
@@ -86,29 +99,25 @@ class WeatherData {
             return date;
         }
 
+        public int getWindDegree() {
+            return (int) windDegree;
+        }
+
+        public int getPressure() {
+            return (int) pressure;
+        }
+
         public int getWindSpeed() {
             return (int) windSpeed;
         }
 
-        static class Temperature implements Parcelable {
-
-            @SerializedName("morn")
-            private double tempMorning;
+        public static class Temperature implements Parcelable {
 
             @SerializedName("day")
             private double tempDay;
 
-            @SerializedName("eve")
-            private double tempEven;
-
-            @SerializedName("night")
-            private double tempNight;
-
-            protected Temperature(Parcel in) {
-                tempMorning = in.readDouble();
+            Temperature(Parcel in) {
                 tempDay = in.readDouble();
-                tempEven = in.readDouble();
-                tempNight = in.readDouble();
             }
 
             public static final Creator<Temperature> CREATOR = new Creator<Temperature>() {
@@ -130,37 +139,22 @@ class WeatherData {
 
             @Override
             public void writeToParcel(Parcel parcel, int i) {
-                parcel.writeDouble(tempMorning);
                 parcel.writeDouble(tempDay);
-                parcel.writeDouble(tempEven);
-                parcel.writeDouble(tempNight);
-            }
-
-            public int getTempMorning() {
-                return (int) tempMorning;
             }
 
             public int getTempDay() {
                 return (int) tempDay;
             }
 
-            public int getTempEven() {
-                return (int) tempEven;
-            }
-
-            public int getTempNight() {
-                return (int) tempNight;
-            }
-
         }
 
-        static class Weather implements Parcelable {
+        public static class Weather implements Parcelable {
 
             private String description;
 
             private String icon;
 
-            protected Weather(Parcel in) {
+            Weather(Parcel in) {
                 description = in.readString();
                 icon = in.readString();
             }

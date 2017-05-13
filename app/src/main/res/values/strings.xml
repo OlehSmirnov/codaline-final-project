@@ -3,16 +3,29 @@
     <string name="title_activity_settings">Settings</string>
     <string name="snack_text_add">Notification added!</string>
     <string name="snack_text_cancel">Notification canceled!</string>
-    <string name="request_user_permission">Application needs your permission to work properly</string>
-    <string name="gps_error_message">Turn on your GPS and wait few seconds</string>
+    <string name="request_user_permission">Application needs your permissions</string>
     <string name="maps_message">Choose place on maps, where you want to go fishing</string>
     <string name="light_style">Light style</string>
     <string name="dark_style">Dark style</string>
+    <string name="wind">Wind</string>
+    <string name="base_img_url">http://openweathermap.org/img/w/</string>
+    <string name="getting_location">Getting location…</string>
 
     <string name="prefs_light_style">prefs_light_style</string>
+    <string name="prefs_units">prefs_units_of_measurement</string>
+    <string name="prefs_units_def_value">celsius</string>
     <string name="prefs_sound_notifications">prefs_notif_sound</string>
     <string name="prefs_vibro_notifications">prefs_notif_vibro</string>
     <string name="app_preferences">my_preferences</string>
     <string name="is_notification_alive">prefs_notif_alive</string>
+    <string name="cloudiness">Cloudiness</string>
+    <string name="cancel_notification">Cancel notification</string>
+    <string name="add_notification">Add notification</string>
+    <string name="best_time">Best Time</string>
+    <string name="details">Details</string>
+    <string name="turn_on_internet_and_gps">Please, turn on your internet and GPS</string>
+    <string name="give_permissions">Give permissions</string>
+    <string name="units_pressure">mmHg</string>
+    <string name="units_wind_speed">m/s</string>
 
 </resources>
